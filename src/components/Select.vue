@@ -419,7 +419,7 @@ export default {
     onTab: {
       type: Function,
       default: function () {
-        if (this.selectOnTab && !this.isComposing) {
+        if (this.selectOnTab && !this.isComposing && this.open) {
           this.typeAheadSelect()
         }
       },
@@ -1041,7 +1041,7 @@ export default {
         this.updateValue(option)
         this.$emit('option:selected', option)
       } else if (
-        this.deselectFromDropdown && this.dropdownOpen &&
+        this.deselectFromDropdown &&
         (this.clearable || (this.multiple && this.selectedValue.length > 1))
       ) {
         this.deselect(option)
