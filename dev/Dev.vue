@@ -2,8 +2,10 @@
   <div id="app">
     <v-select
       v-model="selectedCountry"
-      v-bind="countriesModel"
+      v-bind="countriesList"
       placeholder="Sélectionnez un pays"
+      :selectOnTab="true"
+      :deselectFromDropdown="true"
     />
 
     <label for="books-select">
@@ -12,7 +14,7 @@
     <v-select
       inputId="books-select"
       v-model="selectedBook"
-      v-bind="bookModel"
+      v-bind="booksList"
       multiple="true"
       placeholder="Sélectionnez des livres"
     />
@@ -29,11 +31,11 @@ export default {
   components: { vSelect },
   data: () => ({
     selectedCountry: null,
-    countriesModel: {
+    countriesList: {
       options: countries,
     },
     selectedBook: null,
-    bookModel: {
+    booksList: {
       options: books,
     },
   }),
