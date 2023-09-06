@@ -11,12 +11,19 @@
     <label for="books-select">
       Books
     </label>
+    <p id="books-description1">
+      Select all the books that you want to read.
+    </p>
+    <p id="books-description2">
+      I mean, really, don't hold back.
+    </p>
     <v-select
       inputId="books-select"
       v-model="selectedBook"
       v-bind="booksList"
       multiple="true"
       placeholder="Sélectionnez des livres"
+      :ariaDescribedByUids="['books-description1', 'books-description2']"
     />
 
   </div>

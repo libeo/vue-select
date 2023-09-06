@@ -693,6 +693,17 @@ export default {
       type: [String, Number],
       default: () => uniqueId(),
     },
+
+    /**
+     * List of UIDs that describe the current instance of the component.
+     * These IDs will be read right before the selected options
+     * by Screen Readers (SRs).
+     * Can be passed as either a plain string or an array of strings.
+     */
+    ariaDescribedByUids: {
+      type: [Array, String],
+      default: '',
+    },
   },
 
   data() {
@@ -708,13 +719,22 @@ export default {
 
   computed: {
     /**
-     * Returns a list of selected options's IDs in order to 
-     * be able to set the aria-describedby attribute on the
-     * search input.
-     * @return {String}
+     * A computed property that concatenates any additional aria-describedby 
+     * UIDs provided as props with all selected options' IDs
+     * @return {String} - Space-separated IDs for aria-describedby attribute.
      */
     ariaDescribedBy() {
-      return this.selectedValue.map((option, idx) => `vs${this.uid}__selected-option${idx}`).join(' ');
+      let describedByUids = [];
+      
+      if (typeof this.ariaDescribedByUids === 'string') {
+        describedByUids = this.ariaDescribedByUids.split(' ');
+      } else {
+        describedByUids = [...this.ariaDescribedByUids];
+      }
+
+      const selectedOptions = this.selectedValue.map((option, idx) => `vs${this.uid}__selected-option${idx}`);
+      
+      return [...describedByUids, ...selectedOptions].join(' ');
     },
 
     /**
@@ -789,7 +809,7 @@ export default {
             tabindex: this.tabindex,
             readonly: !this.searchable,
             id: this.inputId,
-            'aria-autocomplete': 'list',
+            'aria-autocomplete': this.autocomplete ? 'list' : '',
             'aria-describedby': this.ariaDescribedBy,
             'aria-controls': `vs${this.uid}__listbox`,
             ref: 'search',
