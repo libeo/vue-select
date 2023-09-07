@@ -54,6 +54,7 @@
             v-bind="scope.search.attributes"
             v-on="scope.search.events"
           />
+          <component v-if="open" :is="childComponents.Magnifier" />
         </slot>
       </div>
 
