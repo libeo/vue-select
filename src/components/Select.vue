@@ -1240,6 +1240,10 @@ export default {
      */
     closeSearchOptions() {
       this.open = false
+      /* Reset typeAheadPointer on blur to allow SRs to read the
+       * proper labels when no option is selected.
+       */
+      this.typeAheadPointer = -1
       this.$emit('search:blur')
     },
 

@@ -4,8 +4,6 @@
       v-model="selectedCountry"
       v-bind="countriesList"
       placeholder="Sélectionnez un pays"
-      :selectOnTab="true"
-      :deselectFromDropdown="true"
     />
 
     <label for="books-select">
