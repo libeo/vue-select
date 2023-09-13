@@ -49,12 +49,14 @@
         </slot>
 
         <slot name="search" v-bind="scope.search">
-          <input
-            class="vs__search"
-            v-bind="scope.search.attributes"
-            v-on="scope.search.events"
-          />
-          <component v-if="open" :is="childComponents.Magnifier" />
+          <div class="vs__search-wrapper">
+            <input
+              class="vs__search"
+              v-bind="scope.search.attributes"
+              v-on="scope.search.events"
+            />
+            <component v-if="displayMagnifier" class="vs__magnifier" :is="childComponents.Magnifier" />
+          </div>
         </slot>
       </div>
 
@@ -72,7 +74,7 @@
           <component :is="childComponents.Deselect" />
         </button>
 
-        <slot name="open-indicator" v-bind="scope.openIndicator">
+        <slot class="vs__open-indicator" name="open-indicator" v-bind="scope.openIndicator">
           <component
             :is="childComponents.OpenIndicator"
             v-if="!noDrop"
@@ -195,6 +197,15 @@ export default {
     disabled: {
       type: Boolean,
       default: false,
+    },
+
+    /**
+     * Determines whether the magnifier icon should be displayed.
+     * @type {Boolean}
+     */
+    displayMagnifierIcon: {
+      type: Boolean,
+      default: true,
     },
 
     /**
@@ -719,6 +730,13 @@ export default {
   },
 
   computed: {
+    displayMagnifier() {
+      if (!this.displayMagnifierIcon) {
+        return false;
+      }
+      return this.open;
+    },
+    
     /**
      * A computed property that concatenates any additional aria-describedby 
      * UIDs provided as props with all selected options' IDs

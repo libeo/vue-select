@@ -39,6 +39,23 @@
     color: var(--vs-search-input-placeholder-color);
 }
 
+.vs__search-wrapper {
+    width: 100%;
+    position: relative;
+}
+
+.vs__search-wrapper input,
+.vs__search-wrapper input:focus {
+    width: 100%;
+}
+
+.vs__search-wrapper svg {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+}
+
 /**
     States
  */
