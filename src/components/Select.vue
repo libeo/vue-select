@@ -58,6 +58,7 @@
       </div>
 
       <div ref="actions" class="vs__actions">
+        <component v-if="displayMagnifier" class="vs__magnifier" :is="childComponents.Magnifier" />
         <button
           v-show="showClearButton"
           ref="clearButton"
@@ -71,7 +72,7 @@
           <component :is="childComponents.Deselect" />
         </button>
 
-        <slot name="open-indicator" v-bind="scope.openIndicator">
+        <slot class="vs__open-indicator" name="open-indicator" v-bind="scope.openIndicator">
           <component
             :is="childComponents.OpenIndicator"
             v-if="!noDrop"
@@ -194,6 +195,15 @@ export default {
     disabled: {
       type: Boolean,
       default: false,
+    },
+
+    /**
+     * Determines whether the magnifier icon should be displayed.
+     * @type {Boolean}
+     */
+    displayMagnifierIcon: {
+      type: Boolean,
+      default: true,
     },
 
     /**
@@ -718,6 +728,13 @@ export default {
   },
 
   computed: {
+    displayMagnifier() {
+      if (!this.displayMagnifierIcon) {
+        return false;
+      }
+      return this.open && this.searchable;
+    },
+    
     /**
      * A computed property that concatenates any additional aria-describedby 
      * UIDs provided as props with all selected options' IDs
@@ -1240,6 +1257,10 @@ export default {
      */
     closeSearchOptions() {
       this.open = false
+      /* Reset typeAheadPointer on blur to allow SRs to read the
+       * proper labels when no option is selected.
+       */
+      this.typeAheadPointer = -1
       this.$emit('search:blur')
     },
 
