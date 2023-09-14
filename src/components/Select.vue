@@ -49,18 +49,16 @@
         </slot>
 
         <slot name="search" v-bind="scope.search">
-          <div class="vs__search-wrapper">
-            <input
-              class="vs__search"
-              v-bind="scope.search.attributes"
-              v-on="scope.search.events"
-            />
-            <component v-if="displayMagnifier" class="vs__magnifier" :is="childComponents.Magnifier" />
-          </div>
+          <input
+            class="vs__search"
+            v-bind="scope.search.attributes"
+            v-on="scope.search.events"
+          />
         </slot>
       </div>
 
       <div ref="actions" class="vs__actions">
+        <component v-if="displayMagnifier" class="vs__magnifier" :is="childComponents.Magnifier" />
         <button
           v-show="showClearButton"
           ref="clearButton"
@@ -734,7 +732,7 @@ export default {
       if (!this.displayMagnifierIcon) {
         return false;
       }
-      return this.open;
+      return this.open && this.searchable;
     },
     
     /**
