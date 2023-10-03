@@ -719,6 +719,7 @@ export default {
   data() {
     return {
       search: '',
+      inputFocused: false,
       open: false,
       isComposing: false,
       pushedTags: [],
@@ -729,10 +730,7 @@ export default {
 
   computed: {
     displayMagnifier() {
-      if (!this.displayMagnifierIcon) {
-        return false;
-      }
-      return this.open && this.searchable;
+      return this.displayMagnifierIcon && (this.inputFocused || this.multiple);
     },
     
     /**
@@ -1257,6 +1255,7 @@ export default {
      */
     closeSearchOptions() {
       this.open = false
+      this.inputFocused = false;
       /* Reset typeAheadPointer on blur to allow SRs to read the
        * proper labels when no option is selected.
        */
@@ -1362,6 +1361,7 @@ export default {
      * @return {void}
      */
     onSearchFocus() {
+      this.inputFocused = true;
       this.open = true
       this.$emit('search:focus')
     },
