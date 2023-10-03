@@ -970,7 +970,7 @@ export default {
      */
     showClearButton() {
       return (
-        this.clearable && !this.open && !this.isValueEmpty
+        this.clearable && !this.open && !this.isValueEmpty && !this.multiple
       )
     },
   },
