@@ -924,7 +924,15 @@ export default {
      * @return {String} Placeholder text
      */
     searchPlaceholder() {
-      return this.isValueEmpty && this.placeholder
+      /**
+       * If multi-select, only hide placeholder when
+       * there is no search text.
+       */
+      var displayPlaceholder = this.multiple
+        ? this.search === ''
+        : this.isValueEmpty;
+
+      return displayPlaceholder && this.placeholder
         ? this.placeholder
         : undefined
     },
