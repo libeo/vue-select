@@ -729,13 +729,18 @@ export default {
   },
 
   computed: {
+
+    /**
+     * Determines whether the magnifier icon should be displayed
+     * @return {Boolean}
+     */
     displayMagnifier() {
       return this.displayMagnifierIcon && (this.inputFocused || this.multiple);
     },
     
     /**
-     * A computed property that concatenates any additional aria-describedby 
-     * UIDs provided as props with all selected options' IDs
+     * Concatenates any additional aria-describedby UIDs
+     * provided as props with all selected options' IDs
      * @return {String} - Space-separated IDs for aria-describedby attribute.
      */
     ariaDescribedBy() {
