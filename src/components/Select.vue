@@ -50,7 +50,7 @@
 
         <slot name="search" v-bind="scope.search">
           <input
-            class="vs__search"
+            :class="['vs__search', inputIsActive ? '' : 'vs__inactive']"
             v-bind="scope.search.attributes"
             v-on="scope.search.events"
           />
@@ -729,6 +729,14 @@ export default {
   },
 
   computed: {
+
+    /**
+     * Determines whether the input is active to attribute a relevant class
+     * @return {Boolean}
+     */
+    inputIsActive() {
+      return this.inputFocused || this.open || (this.isValueEmpty && !this.multiple);
+    },
 
     /**
      * Determines whether the magnifier icon should be displayed
