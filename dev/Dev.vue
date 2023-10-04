@@ -19,7 +19,7 @@
       inputId="books-select"
       v-model="selectedBook"
       v-bind="booksList"
-      multiple="true"
+      :multiple="true"
       placeholder="Sélectionnez des livres"
       :ariaDescribedByUids="['books-description1', 'books-description2']"
     />
