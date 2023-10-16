@@ -860,11 +860,6 @@ export default {
             type: 'search',
             autocomplete: this.autocomplete,
             value: this.search,
-            ...(this.dropdownOpen && this.filteredOptions[this.typeAheadPointer]
-              ? {
-                  'aria-activedescendant': `vs${this.uid}__option-${this.typeAheadPointer}`,
-                }
-              : {}),
           },
           events: {
             compositionstart: () => (this.isComposing = true),
