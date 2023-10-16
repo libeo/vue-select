@@ -16,6 +16,13 @@
       @mousedown="toggleDropdown($event)"
     >
       <div ref="selectedOptions" class="vs__selected-options">
+        <slot v-if="reverseDisplayOrder" name="search" v-bind="scope.search">
+          <input
+            :class="['vs__search', inputIsActive ? '' : 'vs__inactive']"
+            v-bind="scope.search.attributes"
+            v-on="scope.search.events"
+          />
+        </slot>
         <slot
           v-for="option, optionIdx in selectedValue"
           name="selected-option-container"
@@ -48,7 +55,7 @@
           </span>
         </slot>
 
-        <slot name="search" v-bind="scope.search">
+        <slot v-if="!reverseDisplayOrder" name="search" v-bind="scope.search">
           <input
             :class="['vs__search', inputIsActive ? '' : 'vs__inactive']"
             v-bind="scope.search.attributes"
@@ -382,6 +389,15 @@ export default {
     deselectItemLabel: {
       type: String,
       default: 'Déselectionner',
+    },
+    
+    /**
+     * If toggled, search slot will be displayed before the options.
+     * @type {Boolean}
+     */
+     reverseDisplayOrder: {
+      type: Boolean,
+      default: false,
     },
 
     /**
