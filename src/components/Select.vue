@@ -16,6 +16,13 @@
       @mousedown="toggleDropdown($event)"
     >
       <div ref="selectedOptions" class="vs__selected-options">
+        <slot v-if="reverseDisplayOrder" name="search" v-bind="scope.search">
+          <input
+            :class="['vs__search', inputIsActive ? '' : 'vs__inactive']"
+            v-bind="scope.search.attributes"
+            v-on="scope.search.events"
+          />
+        </slot>
         <slot
           v-for="option, optionIdx in selectedValue"
           name="selected-option-container"
@@ -48,9 +55,9 @@
           </span>
         </slot>
 
-        <slot name="search" v-bind="scope.search">
+        <slot v-if="!reverseDisplayOrder" name="search" v-bind="scope.search">
           <input
-            class="vs__search"
+            :class="['vs__search', inputIsActive ? '' : 'vs__inactive']"
             v-bind="scope.search.attributes"
             v-on="scope.search.events"
           />
@@ -382,6 +389,15 @@ export default {
     deselectItemLabel: {
       type: String,
       default: 'Déselectionner',
+    },
+    
+    /**
+     * If toggled, search slot will be displayed before the options.
+     * @type {Boolean}
+     */
+     reverseDisplayOrder: {
+      type: Boolean,
+      default: false,
     },
 
     /**
@@ -719,6 +735,8 @@ export default {
   data() {
     return {
       search: '',
+      inputFocused: false,
+      nbDropdownInteractions: 0,
       open: false,
       isComposing: false,
       pushedTags: [],
@@ -728,16 +746,26 @@ export default {
   },
 
   computed: {
+
+    /**
+     * Determines whether the input is active to attribute a relevant class
+     * @return {Boolean}
+     */
+    inputIsActive() {
+      return this.inputFocused || this.open || (this.isValueEmpty && !this.multiple);
+    },
+
+    /**
+     * Determines whether the magnifier icon should be displayed
+     * @return {Boolean}
+     */
     displayMagnifier() {
-      if (!this.displayMagnifierIcon) {
-        return false;
-      }
-      return this.open && this.searchable;
+      return this.displayMagnifierIcon && (this.inputFocused || this.multiple);
     },
     
     /**
-     * A computed property that concatenates any additional aria-describedby 
-     * UIDs provided as props with all selected options' IDs
+     * Concatenates any additional aria-describedby UIDs
+     * provided as props with all selected options' IDs
      * @return {String} - Space-separated IDs for aria-describedby attribute.
      */
     ariaDescribedBy() {
@@ -833,7 +861,7 @@ export default {
             type: 'search',
             autocomplete: this.autocomplete,
             value: this.search,
-            ...(this.dropdownOpen && this.filteredOptions[this.typeAheadPointer]
+            ...(this.affectActiveDescendant
               ? {
                   'aria-activedescendant': `vs${this.uid}__option-${this.typeAheadPointer}`,
                 }
@@ -869,6 +897,16 @@ export default {
         header: { ...listSlot, deselect: this.deselect },
         footer: { ...listSlot, deselect: this.deselect },
       }
+    },
+
+    /**
+     * Returns a boolean to determine whether the `aria-activedescendant`
+     * attribute needs to be affected to the search input.
+     * 
+     * @returns {Boolean} 
+     */
+    affectActiveDescendant() {
+      return (Boolean)(this.dropdownOpen && (this.nbDropdownInteractions > 1 || this.selectedValue.length == 0));
     },
 
     /**
@@ -926,7 +964,15 @@ export default {
      * @return {String} Placeholder text
      */
     searchPlaceholder() {
-      return this.isValueEmpty && this.placeholder
+      /**
+       * If multi-select, only hide placeholder when
+       * there is no search text.
+       */
+      var displayPlaceholder = this.multiple
+        ? this.search === ''
+        : this.isValueEmpty;
+
+      return displayPlaceholder && this.placeholder
         ? this.placeholder
         : undefined
     },
@@ -972,7 +1018,7 @@ export default {
      */
     showClearButton() {
       return (
-        this.clearable && !this.open && !this.isValueEmpty
+        this.clearable && !this.open && !this.isValueEmpty && !this.multiple
       )
     },
   },
@@ -1257,6 +1303,7 @@ export default {
      */
     closeSearchOptions() {
       this.open = false
+      this.inputFocused = false;
       /* Reset typeAheadPointer on blur to allow SRs to read the
        * proper labels when no option is selected.
        */
@@ -1362,6 +1409,7 @@ export default {
      * @return {void}
      */
     onSearchFocus() {
+      this.inputFocused = true;
       this.open = true
       this.$emit('search:focus')
     },
@@ -1410,6 +1458,8 @@ export default {
           e.preventDefault()
           if (!this.open) {
             this.open = true
+            // Hack to make sure computed property isDropdownActive returns true
+            this.nbDropdownInteractions = 2;
             return
           }
           return this.typeAheadUp()
@@ -1419,6 +1469,8 @@ export default {
           e.preventDefault()
           if (!this.open) {
             this.open = true
+            // Hack to make sure computed property isDropdownActive returns true
+            this.nbDropdownInteractions = 2;
             return
           }
           return this.typeAheadDown()

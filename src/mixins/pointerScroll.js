@@ -8,12 +8,15 @@ export default {
 
   watch: {
     typeAheadPointer() {
+      this.nbDropdownInteractions += 1;
       if (this.autoscroll) {
         this.maybeAdjustScroll()
       }
     },
     open(open) {
-      if (this.autoscroll && open) {
+      if (!open) {
+        this.nbDropdownInteractions = 0;
+      } else if (this.autoscroll && open) {
         this.$nextTick(() => this.maybeAdjustScroll())
       }
     },

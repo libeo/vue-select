@@ -19,9 +19,18 @@
       inputId="books-select"
       v-model="selectedBook"
       v-bind="booksList"
-      multiple="true"
+      :multiple="true"
       placeholder="Sélectionnez des livres"
       :ariaDescribedByUids="['books-description1', 'books-description2']"
+    />
+    <label>Reversed:</label>
+    <v-select
+      inputId="books-select-reversed"
+      v-model="selectedBookReversed"
+      v-bind="booksList"
+      :multiple="true"
+      placeholder="Sélectionnez des livres"
+      :reverseDisplayOrder="true"
     />
 
   </div>
@@ -40,6 +49,7 @@ export default {
       options: countries,
     },
     selectedBook: null,
+    selectedBookReversed: null,
     booksList: {
       options: books,
     },
