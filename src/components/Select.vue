@@ -736,6 +736,7 @@ export default {
     return {
       search: '',
       inputFocused: false,
+      nbDropdownInteractions: 0,
       open: false,
       isComposing: false,
       pushedTags: [],
@@ -860,6 +861,11 @@ export default {
             type: 'search',
             autocomplete: this.autocomplete,
             value: this.search,
+            ...(this.affectActiveDescendant
+              ? {
+                  'aria-activedescendant': `vs${this.uid}__option-${this.typeAheadPointer}`,
+                }
+              : {}),
           },
           events: {
             compositionstart: () => (this.isComposing = true),
@@ -891,6 +897,16 @@ export default {
         header: { ...listSlot, deselect: this.deselect },
         footer: { ...listSlot, deselect: this.deselect },
       }
+    },
+
+    /**
+     * Returns a boolean to determine whether the `aria-activedescendant`
+     * attribute needs to be affected to the search input.
+     * 
+     * @returns {Boolean} 
+     */
+    affectActiveDescendant() {
+      return (Boolean)(this.dropdownOpen && (this.nbDropdownInteractions > 1 || this.selectedValue.length == 0));
     },
 
     /**
@@ -1442,6 +1458,8 @@ export default {
           e.preventDefault()
           if (!this.open) {
             this.open = true
+            // Hack to make sure computed property isDropdownActive returns true
+            this.nbDropdownInteractions = 2;
             return
           }
           return this.typeAheadUp()
@@ -1451,6 +1469,8 @@ export default {
           e.preventDefault()
           if (!this.open) {
             this.open = true
+            // Hack to make sure computed property isDropdownActive returns true
+            this.nbDropdownInteractions = 2;
             return
           }
           return this.typeAheadDown()

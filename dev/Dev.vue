@@ -30,7 +30,6 @@
       v-bind="booksList"
       :multiple="true"
       placeholder="Sélectionnez des livres"
-      :ariaDescribedByUids="['books-description1', 'books-description2']"
       :reverseDisplayOrder="true"
     />
 
